@@ -1,0 +1,21 @@
+# SQLite database
+backend/placement_tracker.db
+backend/placement_tracker.db-journal
+
+# Attachments Locker (Preserve folder, ignore files)
+backend/attachments/*
+!backend/attachments/.gitkeep
+
+# Python caches & virtualenvs
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+.env
+
+# Windows system files
+Thumbs.db
+Desktop.ini

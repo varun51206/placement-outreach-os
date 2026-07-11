@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Outreach OS & Application Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Background glows -->
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+
+    <!-- Auth Container -->
+    <div id="auth-container" class="auth-wrapper">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="brand-logo">🎓</div>
+                <h1>Placement OS</h1>
+                <p>Outreach & Application Tracker</p>
+            </div>
+            <div class="auth-tabs">
+                <button id="tab-btn-login" class="auth-tab-btn active" onclick="switchAuthTab('login')">Sign In</button>
+                <button id="tab-btn-register" class="auth-tab-btn" onclick="switchAuthTab('register')">Register</button>
+            </div>
+            <form id="auth-form" onsubmit="handleAuth(event)">
+                <div class="input-group">
+                    <label for="auth-username">Username</label>
+                    <input type="text" id="auth-username" required placeholder="e.g. varun_bhardwaj">
+                </div>
+                <div class="input-group">
+                    <label for="auth-password">Password</label>
+                    <input type="password" id="auth-password" required placeholder="••••••••">
+                </div>
+                <button type="submit" id="auth-submit-btn" class="btn btn-primary btn-block">Sign In</button>
+                <div id="auth-error" class="alert alert-danger hidden"></div>
+                <div id="auth-success" class="alert alert-success hidden"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div id="app-container" class="app-layout hidden">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <span class="logo-icon">🎓</span>
+                <div class="brand-info">
+                    <h2>Placement OS</h2>
+                    <span>Outreach & Tracker</span>
+                </div>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="#" id="menu-dashboard" class="menu-item active" onclick="switchTab('dashboard')">
+                    <span class="menu-icon">📊</span> Dashboard
+                </a>
+                <a href="#" id="menu-tracker" class="menu-item" onclick="switchTab('tracker')">
+                    <span class="menu-icon">📋</span> Kanban Board
+                </a>
+                <a href="#" id="menu-leads" class="menu-item" onclick="switchTab('leads')">
+                    <span class="menu-icon">👥</span> Lead Grid
+                </a>
+                <a href="#" id="menu-templates" class="menu-item" onclick="switchTab('templates')">
+                    <span class="menu-icon">📝</span> Template Studio
+                </a>
+                <a href="#" id="menu-settings" class="menu-item" onclick="switchTab('settings')">
+                    <span class="menu-icon">⚙️</span> Settings & Resumes
+                </a>
+            </nav>
+
+            <!-- Bottom Profile & Stop Control -->
+            <div class="sidebar-footer">
+                <div id="emergency-stop-container" class="emergency-box">
+                    <button id="emergency-btn" class="btn btn-danger btn-block" onclick="toggleEmergencyStop()">
+                        🚨 EMERGENCY LOCKDOWN
+                    </button>
+                    <p class="emergency-desc">Instantly locks down all scheduled email executions.</p>
+                </div>
+                <div class="user-profile">
+                    <div class="avatar">👤</div>
+                    <div class="user-info">
+                        <span id="display-username" class="username">Guest</span>
+                        <span class="role">Job Seeker</span>
+                    </div>
+                    <button class="logout-btn" onclick="handleLogout()" title="Logout">🚪</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header bar -->
+            <header class="content-header">
+                <h1 id="tab-title">Dashboard</h1>
+                <div class="header-actions">
+                    <div id="stop-banner" class="status-badge badge-danger hidden">EMERGENCY STOP ACTIVE</div>
+                    <span id="current-time-badge" class="time-badge">2026-07-11 00:00</span>
+                </div>
+            </header>
+
+            <!-- TAB: Dashboard -->
+            <section id="tab-content-dashboard" class="tab-panel">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-label">Wishlist & Applied</span>
+                        <span id="stat-applied" class="stat-value">0</span>
+                        <span class="stat-indicator info">Tracked companies</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Interview Rounds</span>
+                        <span id="stat-interviews" class="stat-value">0</span>
+                        <span class="stat-indicator warning">Active discussions</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Offers Secured</span>
+                        <span id="stat-offers" class="stat-value">0</span>
+                        <span class="stat-indicator success-glow">Dream Roles</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Outreach Mails Due</span>
+                        <span id="stat-pending" class="stat-value">0</span>
+                        <span class="stat-indicator info">Ready to send</span>
+                    </div>
+                </div>
+
+                <div class="layout-grid">
+                    <div class="card col-2">
+                        <h3>Domain Campaign Statistics</h3>
+                        <div class="campaign-summary-table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Campaign Category</th>
+                                        <th>Pending Mailings</th>
+                                        <th>Sent Mailings</th>
+                                        <th>Replied Status</th>
+                                        <th>Hot Booked</th>
+                                        <th>Failed Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboard-campaigns-tbody">
+                                    <tr>
+                                        <td colspan="6" class="text-center">No campaign statistics available.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Outreach Mail Engine</h3>
+                        <div class="status-list" style="margin-bottom: 20px;">
+                            <div class="status-row">
+                                <span class="status-dot active" id="engine-status-dot"></span>
+                                <div>
+                                    <h4>Engine Mode</h4>
+                                    <p id="engine-status-text">Manual Send Trigger</p>
+                                </div>
+                            </div>
+                            <div class="status-row">
+                                <span class="status-dot" id="smtp-status-dot"></span>
+                                <div>
+                                    <h4>SMTP Connection</h4>
+                                    <p id="smtp-status-text">Not Verified - Configure settings to test connection</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="dashboard-send-btn" class="btn btn-primary btn-block" onclick="triggerManualSend()">🚀 Start Campaign Send</button>
+                        <div id="dashboard-send-status" class="alert alert-info hidden" style="margin-top: 15px;"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: Kanban Application Tracker -->
+            <section id="tab-content-tracker" class="tab-panel hidden">
+                <div class="tracker-header">
+                    <button class="btn btn-primary" onclick="openAddAppModal()">➕ Add Job / Internship Application</button>
+                </div>
+
+                <div class="kanban-board">
+                    <!-- Column: Wishlist -->
+                    <div class="kanban-column" data-status="Wishlist" ondragover="allowDrop(event)" ondrop="handleDrop(event)">
+                        <div class="column-header">
+                            <h3>Wishlist</h3>
+                            <span class="card-count" id="count-wishlist">0</span>
+                        </div>
+                        <div class="column-cards" id="cards-wishlist"></div>
+                    </div>
+
+                    <!-- Column: Applied -->
+                    <div class="kanban-column" data-status="Applied" ondragover="allowDrop(event)" ondrop="handleDrop(event)">
+                        <div class="column-header">
+                            <h3>Applied</h3>
+                            <span class="card-count" id="count-applied">0</span>
+                        </div>
+                        <div class="column-cards" id="cards-applied"></div>
+                    </div>
+
+                    <!-- Column: OA / Test -->
+                    <div class="kanban-column" data-status="OA / Test" ondragover="allowDrop(event)" ondrop="handleDrop(event)">
+                        <div class="column-header">
+                            <h3>OA / Test</h3>
+                            <span class="card-count" id="count-oa">0</span>
+                        </div>
+                        <div class="column-cards" id="cards-oa"></div>
+                    </div>
+
+                    <!-- Column: Interviewing -->
+                    <div class="kanban-column" data-status="Interviewing" ondragover="allowDrop(event)" ondrop="handleDrop(event)">
+                        <div class="column-header">
+                            <h3>Interviewing</h3>
+                            <span class="card-count" id="count-interviewing">0</span>
+                        </div>
+                        <div class="column-cards" id="cards-interviewing"></div>
+                    </div>
+
+                    <!-- Column: Offer -->
+                    <div class="kanban-column" data-status="Offer" ondragover="allowDrop(event)" ondrop="handleDrop(event)">
+                        <div class="column-header">
+                            <h3>Offer</h3>
+                            <span class="card-count" id="count-offer">0</span>
+                        </div>
+                        <div class="column-cards" id="cards-offer"></div>
+                    </div>
+
+                    <!-- Column: Rejected -->
+                    <div class="kanban-column" data-status="Rejected" ondragover="allowDrop(event)" ondrop="handleDrop(event)">
+                        <div class="column-header">
+                            <h3>Rejected</h3>
+                            <span class="card-count" id="count-rejected">0</span>
+                        </div>
+                        <div class="column-cards" id="cards-rejected"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: Lead Manager Grid -->
+            <section id="tab-content-leads" class="tab-panel hidden">
+                <div class="card filter-bar">
+                    <div class="form-row">
+                        <div class="form-group flex-2">
+                            <label for="lead-campaign-select">Select Campaign Stream</label>
+                            <select id="lead-campaign-select" onchange="loadLeadsGrid()">
+                                <option value="finance">1. Finance Campaign (Internships / Jobs)</option>
+                                <option value="consulting">2. Consulting Campaign (Internships / Jobs)</option>
+                                <option value="marketing">3. Marketing Campaign (Internships / Jobs)</option>
+                                <option value="tech">4. Tech Campaign (SDE / Internships / Jobs)</option>
+                                <option value="all_purpose">5. All-Purpose Campaign (General Outreach)</option>
+                            </select>
+                        </div>
+                        <div class="form-group flex-1">
+                            <label for="lead-start-date">Outreach Start Date</label>
+                            <input type="date" id="lead-start-date">
+                        </div>
+                        <div class="form-group flex-1">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-success btn-block" onclick="bulkSaveLeads()">🚀 Generate Schedule</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card lead-editor-card">
+                    <div class="card-header">
+                        <h3>Interactive Lead Grid (Edit Cells Directly)</h3>
+                        <div class="card-header-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="addGridRow()">➕ Add Lead Row</button>
+                            <button class="btn btn-secondary btn-sm" onclick="clearGrid()">🧹 Clear Grid</button>
+                            <button class="btn btn-danger btn-sm" onclick="clearRemoteSchedule()">🗑️ Delete Database Schedules</button>
+                        </div>
+                    </div>
+                    <p class="editor-help-text">Directly type contacts inside the table below. When ready, click "Generate Schedule" to compute the sequence.</p>
+                    
+                    <div class="spreadsheet-container">
+                        <table class="spreadsheet" id="leads-spreadsheet">
+                            <thead>
+                                <tr id="spreadsheet-header">
+                                    <!-- Dynamic based on selected campaign -->
+                                </tr>
+                            </thead>
+                            <tbody id="spreadsheet-tbody">
+                                <!-- Editable rows will go here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header" style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                        <h3 style="margin-bottom: 0;">Active Schedule & Outbox Queue</h3>
+                        <div class="card-header-actions" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <input type="text" id="queue-search-input" oninput="filterQueueTable()" placeholder="🔍 Search emails/names..." style="width: 180px; padding: 6px 12px; font-size: 0.8rem; height: 32px; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border-color); border-radius: 8px; color: white;">
+                            <button class="btn btn-secondary btn-sm" id="sync-replies-btn" onclick="syncGmailReplies()">📥 Sync Replies via Gmail</button>
+                            <button class="btn btn-secondary btn-sm" onclick="refreshScheduleQueue()">🔄 Refresh Queue</button>
+                            <button id="queue-send-btn" class="btn btn-primary btn-sm" onclick="triggerManualSend()">🚀 Start Sending Due Mails</button>
+                        </div>
+                    </div>
+                    <div id="queue-send-status" class="alert alert-info hidden" style="margin-bottom: 15px;"></div>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Recipient</th>
+                                    <th>Company</th>
+                                    <th>Step Stage</th>
+                                    <th>Scheduled Date</th>
+                                    <th>Status</th>
+                                    <th>Analytics (Opens/Clicks)</th>
+                                    <th>Notes / Errors</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leads-queue-tbody">
+                                <tr>
+                                    <td colspan="8" class="text-center">No active schedule found for this campaign. Add leads above to generate it.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: Template Studio -->
+            <section id="tab-content-templates" class="tab-panel hidden">
+                <div class="layout-grid grid-1-2">
+                    <!-- Left sidebar config -->
+                    <div class="card">
+                        <h3>Choose Stage</h3>
+                        <div class="form-group">
+                            <label for="template-campaign-select">Campaign Category</label>
+                            <select id="template-campaign-select" onchange="loadTemplatesTab()">
+                                <option value="finance">1. Finance Campaign</option>
+                                <option value="consulting">2. Consulting Campaign</option>
+                                <option value="marketing">3. Marketing Campaign</option>
+                                <option value="tech">4. Tech Campaign</option>
+                                <option value="all_purpose">5. All-Purpose Campaign</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="template-step-select">Sequence Step</label>
+                            <select id="template-step-select" onchange="loadTemplateView()">
+                                <!-- Loaded dynamically via app.js -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="template-offset">Delay Offset (Days from Start)</label>
+                            <input type="number" id="template-offset" min="0" value="0">
+                        </div>
+                        <div class="alert alert-info">
+                            <h4>Placeholders Available</h4>
+                            <ul class="placeholders-list">
+                                <li><code>{{FirstName}}</code></li>
+                                <li><code>{{Company}}</code></li>
+                                <li><code>{{RoleType}}</code> (Internship vs Job)</li>
+                                <li><code>{{Division}}</code> (e.g. Valuation Division)</li>
+                                <li><code>{{SenderName}}</code></li>
+                                <li><code>{{SenderPhone}}</code></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Template Editor -->
+                    <div class="card">
+                        <h3>Edit Email Content</h3>
+                        <div class="form-group">
+                            <label for="template-subject">Email Subject</label>
+                            <input type="text" id="template-subject" placeholder="e.g. Opportunities in {{Division}} at {{Company}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="template-body">Email Body (Rich Text Editor)</label>
+                            <div class="editor-toolbar" style="display: flex; gap: 5px; background: rgba(15, 23, 42, 0.6); padding: 8px; border-radius: 8px 8px 0 0; border: 1px solid var(--border-color); border-bottom: none;">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="formatDoc('bold')" style="padding: 2px 8px; font-weight: bold; font-size: 0.75rem; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1);">B</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="formatDoc('italic')" style="padding: 2px 8px; font-style: italic; font-size: 0.75rem; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1);">I</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="formatDoc('underline')" style="padding: 2px 8px; text-decoration: underline; font-size: 0.75rem; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1);">U</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="formatDoc('insertUnorderedList')" style="padding: 2px 8px; font-size: 0.75rem; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1);">• List</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="formatDoc('createLink')" style="padding: 2px 8px; font-size: 0.75rem; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1);">🔗 Link</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="formatDoc('unlink')" style="padding: 2px 8px; font-size: 0.75rem; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1);">Unlink</button>
+                            </div>
+                            <div id="template-body-editor" contenteditable="true" style="height: 300px; background: rgba(15, 23, 42, 0.4); border: 1px solid var(--border-color); border-radius: 0 0 8px 8px; color: white; padding: 15px; overflow-y: auto; outline: none; font-family: inherit; font-size: 0.9rem; line-height: 1.6;"></div>
+                        </div>
+                        <div class="form-row" style="display: flex; gap: 10px;">
+                            <button class="btn btn-primary" onclick="saveTemplate()">💾 Save Template Stage</button>
+                            <button class="btn btn-secondary" id="send-test-btn" onclick="sendTestEmail()">✉️ Send Test Email to Self</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Template Preview -->
+                <div class="card mt-4">
+                    <h3>Live Rendered Template Preview</h3>
+                    <p class="editor-help-text">Shows how your template will appear to recipients using sample variables.</p>
+                    <div class="preview-box">
+                        <div class="preview-header">
+                            <strong>Subject:</strong> <span id="preview-subject-text"></span>
+                        </div>
+                        <div class="preview-body" id="preview-body-text" style="background: rgba(10, 13, 22, 0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); min-height: 100px;">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: Settings & Resume Locker -->
+            <section id="tab-content-settings" class="tab-panel hidden">
+                <div class="layout-grid">
+                    <!-- SMTP Configurations -->
+                    <div class="card">
+                        <h3>SMTP Credentials & Signature</h3>
+                        <form id="settings-form" onsubmit="saveSettings(event)">
+                            <div class="form-group">
+                                <label for="settings-sender-name">Sender Full Name (Signature)</label>
+                                <input type="text" id="settings-sender-name" required placeholder="e.g. Varun Bhardwaj">
+                            </div>
+                            <div class="form-group">
+                                <label for="settings-sender-phone">Sender Phone Number</label>
+                                <input type="text" id="settings-sender-phone" placeholder="e.g. +91 95991 25723">
+                            </div>
+                            <div class="form-group">
+                                <label for="settings-gmail-user">Gmail SMTP Username (Email Address)</label>
+                                <input type="email" id="settings-gmail-user" required placeholder="e.g. varun@gmail.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="settings-gmail-password">Gmail App Password</label>
+                                <input type="password" id="settings-gmail-password" required placeholder="16-character google app password">
+                                <p class="help-text">Must be a Google App Password (not your primary password). Enable 2FA in Google Account security to generate this.</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="settings-public-url">Public Server URL (For Open/Click Track Analytics)</label>
+                                <input type="text" id="settings-public-url" required value="http://127.0.0.1:8001" placeholder="e.g. http://127.0.0.1:8001">
+                                <p class="help-text">Defaults to local port 8001. If you host this application publicly, update this to your domain so tracking pixel links can resolve.</p>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Settings</button>
+                        </form>
+                    </div>
+
+                    <!-- Connection Testing & Resume Locker -->
+                    <div class="card">
+                        <h3>Test SMTP Connection</h3>
+                        <div class="form-group">
+                            <label for="test-smtp-email">Test Recipient Email</label>
+                            <div class="flex-row">
+                                <input type="email" id="test-smtp-email" placeholder="e.g. check@test.com" style="flex: 2;">
+                                <button class="btn btn-secondary" onclick="runSmtpTest()" style="flex: 1;">Send Test Email</button>
+                            </div>
+                        </div>
+                        <div id="smtp-test-result" class="alert alert-info hidden"></div>
+
+                        <hr class="divider">
+
+                        <h3>Personal CV & Resume Locker</h3>
+                        <p class="help-text">Attach different CVs for different roles. The uploaded resume will be attached to the **INITIAL** outreach mail of that campaign stream.</p>
+                        
+                        <div class="attachment-uploader">
+                            <label for="attachment-campaign-select">Select Target Campaign CV</label>
+                            <select id="attachment-campaign-select">
+                                <option value="finance">Finance Resume</option>
+                                <option value="consulting">Consulting Resume</option>
+                                <option value="marketing">Marketing Resume</option>
+                                <option value="tech">Tech Resume</option>
+                                <option value="all_purpose">All-Purpose Resume</option>
+                            </select>
+
+                            <div class="file-dropzone" id="file-dropzone">
+                                <input type="file" id="attachment-file-input" onchange="handleFileSelected(event)">
+                                <span class="dropzone-icon">📁</span>
+                                <span class="dropzone-text">Click to choose a PDF Resume</span>
+                            </div>
+                            <div id="upload-status" class="alert alert-success hidden"></div>
+                        </div>
+
+                        <div class="attachment-list mt-4">
+                            <h4>Uploaded Resumes</h4>
+                            <ul class="files-list" id="uploaded-files-list">
+                                <!-- Dynamically loaded files -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Application Modal -->
+    <div id="app-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Track New Application</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <form id="app-modal-form" onsubmit="saveApplication(event)">
+                <input type="hidden" id="modal-app-id" value="">
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label for="modal-company">Company Name *</label>
+                        <input type="text" id="modal-company" required placeholder="e.g. EY">
+                    </div>
+                    <div class="form-group flex-1">
+                        <label for="modal-role">Role *</label>
+                        <input type="text" id="modal-role" required placeholder="e.g. Analyst">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label for="modal-role-type">Role Type *</label>
+                        <select id="modal-role-type">
+                            <option value="Internship">Internship</option>
+                            <option value="Job">Job</option>
+                        </select>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label for="modal-division">Division / Team</label>
+                        <input type="text" id="modal-division" placeholder="e.g. Valuations/Investments Division">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label for="modal-contact-name">Contact Person Name</label>
+                        <input type="text" id="modal-contact-name" placeholder="e.g. John Doe">
+                    </div>
+                    <div class="form-group flex-1">
+                        <label for="modal-contact-email">Contact Email</label>
+                        <input type="email" id="modal-contact-email" placeholder="e.g. john@ey.com">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label for="modal-status">Application Status *</label>
+                        <select id="modal-status">
+                            <option value="Wishlist">Wishlist</option>
+                            <option value="Applied">Applied</option>
+                            <option value="OA / Test">OA / Test</option>
+                            <option value="Interviewing">Interviewing</option>
+                            <option value="Offer">Offer</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="modal-notes">Application Notes</label>
+                    <textarea id="modal-notes" rows="4" placeholder="Mention links, interview questions, deadlines etc."></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="button" id="modal-delete-btn" class="btn btn-danger hidden" onclick="deleteApplicationClick()">Delete</button>
+                    <button type="submit" class="btn btn-primary">Save Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
