@@ -415,7 +415,25 @@ def schedule_bulk_leads(payload: BulkLeadUpload, user = Depends(get_current_user
     if not steps:
         raise HTTPException(status_code=400, detail="No email template stages configured.")
 
+    # Fetch existing scheduled emails for duplicates check
+    existing_rows = cursor.execute("""
+        SELECT DISTINCT email FROM schedule 
+        WHERE user_id = ? AND campaign_id = ?
+    """, (user["id"], payload.campaign_id)).fetchall()
+    existing_emails = {r["email"].strip().lower() for r in existing_rows}
+
+    skipped_count = 0
+    inserted_count = 0
+
     for lead in payload.leads:
+        lead_email_clean = lead.email.strip().lower()
+        if lead_email_clean in existing_emails:
+            skipped_count += 1
+            continue
+            
+        existing_emails.add(lead_email_clean)
+        inserted_count += 1
+
         start_step = lead.start_from or "initial"
         if start_step not in generic_steps:
             start_step = "initial"
@@ -449,7 +467,11 @@ def schedule_bulk_leads(payload: BulkLeadUpload, user = Depends(get_current_user
             
     conn.commit()
     conn.close()
-    return {"message": f"Scheduled outreach for {len(payload.leads)} leads across {len(steps)} follow-up stages"}
+
+    msg_detail = f"Successfully scheduled {inserted_count * len(steps)} emails for {inserted_count} leads."
+    if skipped_count > 0:
+        msg_detail += f" (Skipped {skipped_count} duplicate leads already present in queue)"
+    return {"message": msg_detail}
 
 @app.post("/api/schedule/update-status")
 def update_status(data: StatusUpdate, user = Depends(get_current_user)):

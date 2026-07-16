@@ -576,7 +576,7 @@ async function bulkSaveLeads() {
             const custom_field_2 = inputs[4].innerText.trim();
             const start_from = selects[1].value;
             
-            if (email && company) {
+            if (email) {
                 leadsToSend.push({
                     email,
                     first_name,
@@ -591,8 +591,35 @@ async function bulkSaveLeads() {
     });
     
     if (leadsToSend.length === 0) {
-        alert("No valid leads found in grid (Email and Company Name are required).");
+        alert("Enter at least one lead with a valid email address.");
         return;
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    let errors = [];
+    let warnings = [];
+    
+    leadsToSend.forEach((lead, idx) => {
+        const rowNum = idx + 1;
+        if (!emailRegex.test(lead.email.trim())) {
+            errors.push(`Row ${rowNum}: '${lead.email}' is not a valid email address.`);
+        }
+        if (!lead.first_name || lead.first_name.trim() === "") {
+            warnings.push(`Row ${rowNum}: First Name is missing.`);
+        }
+        if (!lead.company || lead.company.trim() === "") {
+            warnings.push(`Row ${rowNum}: Company Name is missing.`);
+        }
+    });
+
+    if (errors.length > 0) {
+        alert("Please fix the following validation errors before saving:\n\n" + errors.join("\n"));
+        return;
+    }
+
+    if (warnings.length > 0) {
+        const proceed = confirm("Warnings found in your leads list:\n\n" + warnings.join("\n") + "\n\nDo you still want to save and generate schedules?");
+        if (!proceed) return;
     }
     
     const payload = {
@@ -944,7 +971,12 @@ function loadTemplateView() {
     if (templatesData[campaignId] && templatesData[campaignId][stepKey]) {
         const t = templatesData[campaignId][stepKey];
         subjectInput.value = t.subject || "";
-        editor.innerHTML = t.body || "";
+        let bodyHtml = t.body || "";
+        const isHtml = bodyHtml.trim().startsWith("<") || bodyHtml.includes("</div>") || bodyHtml.includes("</p>") || bodyHtml.includes("<br");
+        if (!isHtml) {
+            bodyHtml = bodyHtml.replace(/\n/g, "<br>");
+        }
+        editor.innerHTML = bodyHtml;
         offsetInput.value = t.day_offset || 0;
     }
     

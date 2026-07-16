@@ -1,5 +1,16 @@
 import time
 import imaplib
+import socket
+
+def get_smtp_ipv4_host() -> str:
+    try:
+        addr_info = socket.getaddrinfo("smtp.gmail.com", 587, socket.AF_INET, socket.SOCK_STREAM)
+        if addr_info:
+            return addr_info[0][4][0]
+    except Exception:
+        pass
+    return "smtp.gmail.com"
+
 import re
 import os
 import sqlite3
@@ -78,6 +89,8 @@ def send_email_smtp(gmail_user, gmail_app_password, to_email, subject, body, fro
         
         is_html = body.strip().startswith("<") or "</div>" in body or "</p>" in body or "<br" in body
         mime_type = "html" if is_html else "plain"
+        if mime_type == "html":
+            body = body.replace("\n", "<br>")
         msg.attach(MIMEText(body, mime_type, "utf-8"))
 
         if attachment_path and os.path.exists(attachment_path):
@@ -89,7 +102,8 @@ def send_email_smtp(gmail_user, gmail_app_password, to_email, subject, body, fro
             part.add_header("Content-Disposition", f'attachment; filename="{name}"')
             msg.attach(part)
 
-        with smtplib.SMTP("smtp.gmail.com", 587, timeout=180) as server:
+        smtp_host = get_smtp_ipv4_host()
+        with smtplib.SMTP(smtp_host, 587, timeout=180) as server:
             server.ehlo()
             server.starttls()
             server.ehlo()
@@ -281,7 +295,7 @@ def process_due_emails(user_id: int):
             print(f"[Worker] User {user_id} | Campaign {campaign_id} | Sent to {to_email} | Result: {msg}")
 
             if sent_count < total_count:
-                time.sleep(5.5)
+                time.sleep(1.5)
 
         else:
             # Loop finished normally without break
