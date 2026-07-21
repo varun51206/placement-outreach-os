@@ -145,7 +145,12 @@ async function handleAuth(e) {
             body: JSON.stringify({ username: user, password: pass })
         });
         
-        const data = await response.json();
+        let data;
+        try {
+            data = await response.json();
+        } catch (jsonErr) {
+            throw new Error(`Server Error (${response.status}): ${response.statusText || "Request failed"}`);
+        }
         
         if (!response.ok) {
             throw new Error(data.detail || "Authentication request failed.");

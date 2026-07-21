@@ -316,7 +316,7 @@ def create_user(username, password):
         # Insert default settings
         cursor.execute(
             "INSERT INTO settings (user_id, sender_name, sender_phone, gmail_user, gmail_app_password, emergency_stop, public_url) VALUES (?, ?, ?, ?, ?, 0, 'http://127.0.0.1:8001')",
-            (user_id, username, "", "", "", "")
+            (user_id, username, "", "", "")
         )
 
         # Seed default templates for this user
