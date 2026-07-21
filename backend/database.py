@@ -266,6 +266,19 @@ def init_db():
         pass
     conn.commit()
 
+    # Ensure default local user (id=1) and settings exist for seamless desktop app usage
+    row_user = cursor.execute("SELECT id FROM users WHERE id = 1").fetchone()
+    if not row_user:
+        now_ts = datetime.now().isoformat()
+        cursor.execute(
+            "INSERT INTO users (id, username, password_hash, salt, created_at) VALUES (1, 'local_user', '', '', ?)",
+            (now_ts,)
+        )
+        cursor.execute(
+            "INSERT INTO settings (user_id, sender_name, sender_phone, gmail_user, gmail_app_password, emergency_stop, public_url) VALUES (1, 'Varun Bhardwaj', '', '', '', 0, 'http://127.0.0.1:8001')"
+        )
+        conn.commit()
+
     # Seed default templates for all registered users if they are missing
     users = cursor.execute("SELECT id FROM users").fetchall()
     for u in users:

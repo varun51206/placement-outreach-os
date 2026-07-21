@@ -90,21 +90,9 @@ class ApplicationItem(BaseModel):
     notes: Optional[str] = ""
 
 
-# Dependency: Authenticate User via Token in Authorization Header
+# Dependency: Authenticate User (Bypassed for local desktop app usage)
 async def get_current_user(authorization: Optional[str] = Header(None)):
-    if not authorization:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Session token is missing"
-        )
-    token = authorization.replace("Bearer ", "").strip()
-    user = get_user_from_session(token)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Session expired or invalid"
-        )
-    return user
+    return {"id": 1, "username": "local_user"}
 
 
 # --- Auth Routes ---

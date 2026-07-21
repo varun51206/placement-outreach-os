@@ -33,12 +33,7 @@ let draggedCard = null;
 window.addEventListener("load", () => {
     updateTime();
     setInterval(updateTime, 60000);
-    
-    if (sessionToken) {
-        showApp();
-    } else {
-        showAuth();
-    }
+    showApp();
 });
 
 // Auto time update in header
@@ -191,7 +186,6 @@ async function handleLogout() {
 
 function getAuthHeaders() {
     return {
-        "Authorization": `Bearer ${sessionToken}`,
         "Content-Type": "application/json"
     };
 }
