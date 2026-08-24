@@ -64,6 +64,7 @@ class LeadItem(BaseModel):
     role: Optional[str] = "Internship" # "Job" or "Internship"
     custom_field_1: Optional[str] = "" # Division / Tech Stack
     custom_field_2: Optional[str] = "" # Extra note
+    target_type: Optional[str] = "HR" # "HR" or "Non-HR"
     start_from: Optional[str] = "initial"
 
 class BulkLeadUpload(BaseModel):
@@ -444,12 +445,13 @@ def schedule_bulk_leads(payload: BulkLeadUpload, user = Depends(get_current_user
             cursor.execute("""
                 INSERT INTO schedule (
                     user_id, campaign_id, email, first_name, company, role, 
-                    custom_field_1, custom_field_2, status, stage_step, 
+                    custom_field_1, custom_field_2, target_type, status, stage_step, 
                     scheduled_date, notes, created_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Pending', ?, ?, '', ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending', ?, ?, '', ?)
             """, (
                 user["id"], payload.campaign_id, lead.email.strip(), lead.first_name, 
                 lead.company, lead.role, lead.custom_field_1, lead.custom_field_2,
+                lead.target_type or "HR",
                 step_key, scheduled_date, now_ts
             ))
             

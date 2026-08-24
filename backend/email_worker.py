@@ -144,7 +144,7 @@ def process_due_emails(user_id: int):
     # Query due rows strictly for this user_id
     query = f"""
         SELECT s.id, s.user_id, s.campaign_id, s.email, s.first_name, s.company, s.role,
-               s.custom_field_1, s.custom_field_2, s.stage_step,
+               s.custom_field_1, s.custom_field_2, s.target_type, s.stage_step,
                u.sender_name, u.sender_phone, u.gmail_user, u.gmail_app_password, u.emergency_stop
         FROM schedule s
         JOIN settings u ON s.user_id = u.user_id
@@ -197,6 +197,7 @@ def process_due_emails(user_id: int):
             role = row["role"] # Job or Internship
             c1 = row["custom_field_1"] # Division
             c2 = row["custom_field_2"] # Custom note
+            target_type_val = row["target_type"]
             stage_step = row["stage_step"]
             sender_name = row["sender_name"]
             sender_phone = row["sender_phone"]
@@ -212,12 +213,17 @@ def process_due_emails(user_id: int):
                 conn.commit()
                 continue
 
-            template_key = f"{user_id}_{campaign_id}_{stage_step}"
+            resolved_step = stage_step
+            if stage_step == "initial":
+                t_type = str(target_type_val or "HR").strip().lower()
+                resolved_step = "initial_hr" if "hr" in t_type else "initial_non_hr"
+
+            template_key = f"{user_id}_{campaign_id}_{resolved_step}"
             if template_key not in templates_cache:
                 t_row = conn.execute("""
                     SELECT subject, body FROM templates 
                     WHERE user_id = ? AND campaign_id = ? AND step_key = ?
-                """, (user_id, campaign_id, stage_step)).fetchone()
+                """, (user_id, campaign_id, resolved_step)).fetchone()
                 if t_row:
                     templates_cache[template_key] = (t_row["subject"], t_row["body"])
                 else:

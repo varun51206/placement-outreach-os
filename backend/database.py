@@ -8,8 +8,13 @@ DB_PATH = os.path.join(os.path.dirname(__file__), "placement_tracker.db")
 
 DEFAULT_TEMPLATES = {
     "finance": {
-        "initial": {
-            "subject": "Opportunities in {{Division}} at {{Company}} — {{SenderName}}",
+        "initial_hr": {
+            "subject": "Application for {{RoleType}} ({{Division}}) at {{Company}} — {{SenderName}}",
+            "body": """Good Morning, I hope you are doing well<br><br>I realise that your schedule is very valuable, so I'll Keep it short.<br>I'm a 2nd year student at Ramjas College, University of Delhi, passionate about {{Division}}. I am writing to express my strong interest in exploring {{RoleType}} opportunities within the {{Division}} team at {{Company}}.<br><br>Something that might make me a tad bit more relevant-<br><br>- 1. A 1 Month VC Scouting Intern at Foxhog, A 2 Month Investment Banking Intern at StartupLanes, and a 2 Month Transaction Advisory Intern at Plutus Business Advisory.<br>- 2. Corporate live projects with Rapido, Findoc, Zyber, CRY, and Bombay Shaving Company.<br>- 3. PORs in top student societies including the Placement Cell, E-Cell, and IFSA Ramjas.<br><br>I have attached my CV for your review. I would be grateful if my profile could be considered for any suitable openings or route it to the appropriate hiring managers.<br><br>Thank you for your time and consideration.<br><br>Best,<br>{{SenderName}}<br>{{SenderPhone}}""",
+            "day_offset": 0
+        },
+        "initial_non_hr": {
+            "subject": "Exploring opportunities in {{Division}} at {{Company}} — {{SenderName}}",
             "body": """Good Morning, I hope you are doing well<br><br>I realise that your schedule is very valuable, so I'll Keep it short.<br>I'm a 2nd year student at Ramjas College, University of Delhi, passionate about and exploring core finance, public and private markets for the last 18 months. I'm seeking a {{RoleType}} at {{Company}} in the {{Division}} to gain real-time exposure and experience. I am open to long-working hours and in-office commitments, as I strongly believe sustained learning is critical in the early stages of my career.<br><br>Something that might make me a tad bit more relevant-<br><br>- 1. A 1 Month VC Scouting Intern at Foxhog, A 2 Month Investment Banking Intern at StartupLanes, an England based fundraising platform and a 2 Month Transaction Advisory Intern at Plutus Business Advisory, a Boutique IB to understand the nature of such roles<br><br>- 2. Live Projects at firms like Findoc, Rapido, CRY, Bombay Shaving Company, ZYBER and Saveit across several Verticals to understand Corporate Culture<br><br>- 3. PORs in several top Societies including International Finance Student Association Ramjas, Placement Cell and The Entrepreneurship cell providing the appropriate fit for the role<br><br>I am attaching my CV for your reference. I would be grateful if my profile could be considered for any suitable opportunities or related teams.<br><br>I understand this may not directly fall within your area of responsibility, but I would sincerely appreciate any guidance or consideration that could help me explore relevant opportunities within the organization.<br><br>I am eager to learn, willing to put in the required effort, and excited about the possibility of contributing while gaining exposure from industry leaders at {{Company}}.<br><br>Looking forward to being an asset to the team, thanks for your time and the read<br>Best,<br><br>{{SenderName}}<br>{{SenderPhone}}""",
             "day_offset": 0
         },
@@ -35,8 +40,13 @@ DEFAULT_TEMPLATES = {
         }
     },
     "consulting": {
-        "initial": {
-            "subject": "Opportunities in {{Division}} at {{Company}} — {{SenderName}}",
+        "initial_hr": {
+            "subject": "Application for {{RoleType}} ({{Division}}) at {{Company}} — {{SenderName}}",
+            "body": """Good Morning, I hope you are doing well<br><br>I realise that your schedule is very valuable, so I'll Keep it short.<br>I'm a 2nd year student at Ramjas College, University of Delhi, passionate about {{Division}}. I am writing to express my strong interest in exploring {{RoleType}} opportunities within the {{Division}} team at {{Company}}.<br><br>Something that might make me a tad bit more relevant-<br><br>- 1. Handled client-facing Live Projects at firms like Findoc, Rapido, CRY, Bombay Shaving Company, ZYBER, and Saveit, delivering consumer research, market sizing, and corporate strategies.<br>- 2. Developed analytical and financial modeling capabilities through transaction advisory and IB internships (Plutus, StartupLanes, Foxhog).<br>- 3. Held PORs in several top Societies including IFSA Ramjas, the Placement Cell, and the Entrepreneurship Cell.<br><br>I have attached my CV for your review. I would be grateful if my profile could be considered for any suitable openings or route it to the appropriate hiring managers.<br><br>Thank you for your time and consideration.<br><br>Best,<br>{{SenderName}}<br>{{SenderPhone}}""",
+            "day_offset": 0
+        },
+        "initial_non_hr": {
+            "subject": "Exploring opportunities in {{Division}} at {{Company}} — {{SenderName}}",
             "body": """Good Morning, I hope you are doing well<br><br>I realise that your schedule is very valuable, so I'll Keep it short.<br>I'm a 2nd year student at Ramjas College, University of Delhi, passionate about management consulting, strategy, and corporate growth. I'm seeking a {{RoleType}} at {{Company}} in the {{Division}} to gain real-time exposure. I am open to intensive workloads and in-office commitments, as I believe sustained learning is critical in the early stages of my career.<br><br>Something that might make me a tad bit more relevant-<br><br>- 1. Handled client-facing Live Projects at firms like Findoc, Rapido, CRY, Bombay Shaving Company, ZYBER, and Saveit, delivering consumer research, market sizing, and corporate strategies.<br><br>- 2. Developed analytical and financial modeling capabilities through transaction advisory and IB internships (Plutus, StartupLanes, Foxhog).<br><br>- 3. Held PORs in several top Societies including IFSA Ramjas, the Placement Cell, and the Entrepreneurship Cell, managing corporate relations and team deliverables.<br><br>I am attaching my Consulting CV for your reference. I would be grateful if my profile could be considered for any suitable opportunities or related teams.<br><br>I understand this may not directly fall within your area of responsibility, but I would sincerely appreciate any guidance or consideration that could help me explore relevant opportunities within the organization.<br><br>I am eager to learn, willing to put in the required effort, and excited about the possibility of contributing while gaining exposure from industry leaders at {{Company}}.<br><br>Looking forward to being an asset to the team, thanks for your time and the read<br>Best,<br><br>{{SenderName}}<br>{{SenderPhone}}""",
             "day_offset": 0
         },
@@ -62,8 +72,13 @@ DEFAULT_TEMPLATES = {
         }
     },
     "marketing": {
-        "initial": {
-            "subject": "Opportunities in {{Division}} at {{Company}} — {{SenderName}}",
+        "initial_hr": {
+            "subject": "Application for {{RoleType}} ({{Division}}) at {{Company}} — {{SenderName}}",
+            "body": """Good Morning, I hope you are doing well<br><br>I realise that your schedule is very valuable, so I'll Keep it short.<br>I'm a 2nd year student at Ramjas College, University of Delhi, passionate about {{Division}}. I am writing to express my strong interest in exploring {{RoleType}} opportunities within the {{Division}} team at {{Company}}.<br><br>Something that might make me a tad bit more relevant-<br><br>- 1. Gen Z consumer research live project at Bombay Shaving Company (directly shaped 4 brand reels generating 100K+ views), and campus rollout support for Zyber (scaled from 0 to 16 colleges in 20 days).<br>- 2. Executed Live marketing and GTM strategy sprints at firms like Rapido, Findoc, Saveit, and CRY.<br>- 3. PORs in key societies like the Placement Cell and the Entrepreneurship Cell, leading student outreach and brand engagement campaigns.<br><br>I have attached my CV for your review. I would be grateful if my profile could be considered for any suitable openings or route it to the appropriate hiring managers.<br><br>Thank you for your time and consideration.<br><br>Best,<br>{{SenderName}}<br>{{SenderPhone}}""",
+            "day_offset": 0
+        },
+        "initial_non_hr": {
+            "subject": "Exploring opportunities in {{Division}} at {{Company}} — {{SenderName}}",
             "body": """Good Morning, I hope you are doing well<br><br>I realise that your schedule is very valuable, so I'll Keep it short.<br>I'm a 2nd year student at Ramjas College, University of Delhi, passionate about marketing, brand strategy, and growth. I'm seeking a {{RoleType}} at {{Company}} in the {{Division}} to gain hands-on marketing exposure. I am highly motivated and open to in-office commitments.<br><br>Something that might make me a tad bit more relevant-<br><br>- 1. Gen Z consumer research live project at Bombay Shaving Company (directly shaped 4 brand reels generating 100K+ views), and campus rollout support for Zyber (scaled from 0 to 16 colleges in 20 days).<br><br>- 2. Executed Live marketing and GTM strategy sprints at firms like Rapido, Findoc, Saveit, and CRY.<br><br>- 3. PORs in key societies like the Placement Cell and the Entrepreneurship Cell, leading student outreach and brand engagement campaigns.<br><br>I am attaching my Marketing CV for your reference. I would be grateful if my profile could be considered for any suitable opportunities or related teams.<br><br>I understand this may not directly fall within your area of responsibility, but I would sincerely appreciate any guidance or consideration that could help me explore relevant opportunities within the organization.<br><br>I am eager to learn, willing to put in the required effort, and excited about the possibility of contributing while gaining exposure from industry leaders at {{Company}}.<br><br>Looking forward to being an asset to the team, thanks for your time and the read<br>Best,<br><br>{{SenderName}}<br>{{SenderPhone}}""",
             "day_offset": 0
         },
@@ -89,8 +104,13 @@ DEFAULT_TEMPLATES = {
         }
     },
     "tech": {
-        "initial": {
-            "subject": "Opportunities in {{Division}} at {{Company}} — {{SenderName}}",
+        "initial_hr": {
+            "subject": "Application for {{RoleType}} ({{Division}}) at {{Company}} — {{SenderName}}",
+            "body": """Good Morning, I hope you are doing well<br><br>I realise that your schedule is very valuable, so I'll Keep it short.<br>I'm a 2nd year student at Ramjas College, University of Delhi, passionate about {{Division}}. I am writing to express my strong interest in exploring {{RoleType}} opportunities within the {{Division}} team at {{Company}}.<br><br>Something that might make me a tad bit more relevant-<br><br>- 1. Explored core tech stacks through hands-on development, including building personal projects using Python, FastAPI, SQLite, and vanilla HTML/CSS/JS web applications.<br>- 2. Handled Live Projects at firms like Rapido and Zyber.<br>- 3. PORs in key societies including the Placement Cell and the Entrepreneurship Cell, leading tech operations and managing database tracking pipelines.<br><br>I have attached my Resume for your review. I would be grateful if my profile could be considered for any suitable openings or route it to the appropriate hiring managers.<br><br>Thank you for your time and consideration.<br><br>Best,<br>{{SenderName}}<br>{{SenderPhone}}""",
+            "day_offset": 0
+        },
+        "initial_non_hr": {
+            "subject": "Exploring opportunities in {{Division}} at {{Company}} — {{SenderName}}",
             "body": """Good Morning, I hope you are doing well<br><br>I realise that your schedule is very valuable, so I'll Keep it short.<br>I'm a 2nd year student at Ramjas College, University of Delhi, passionate about software engineering, system design, and building scalable applications. I'm seeking a {{RoleType}} at {{Company}} in the {{Division}} to gain real-time engineering exposure. I am open to intensive workloads and in-office commitments, as I believe sustained learning is critical in the early stages of my career.<br><br>Something that might make me a tad bit more relevant-<br><br>- 1. Explored core tech stacks through hands-on development, including building personal projects using Python, FastAPI, SQLite, and vanilla HTML/CSS/JS web applications.<br><br>- 2. Handled Live Projects at firms like Rapido (analyzed Captain app driver feedback feeding directly into their product roadmap) and Zyber (scaled campus rollout from 0 to 16 colleges in 20 days).<br><br>- 3. PORs in key societies including the Placement Cell and the Entrepreneurship Cell, leading tech operations, managing database tracking pipelines, and orchestrating society web portals.<br><br>I am attaching my Resume for your reference. I would be grateful if my profile could be considered for any suitable opportunities or related teams.<br><br>I understand this may not directly fall within your area of responsibility, but I would sincerely appreciate any guidance or consideration that could help me explore relevant opportunities within the organization.<br><br>I am eager to learn, willing to put in the required effort, and excited about the possibility of contributing while gaining exposure from tech leaders at {{Company}}.<br><br>Looking forward to being an asset to the team, thanks for your time and the read<br>Best,<br><br>{{SenderName}}<br>{{SenderPhone}}""",
             "day_offset": 0
         },
@@ -116,8 +136,13 @@ DEFAULT_TEMPLATES = {
         }
     },
     "all_purpose": {
-        "initial": {
-            "subject": "Opportunities / Collaboration Proposal at {{Company}} — {{SenderName}}",
+        "initial_hr": {
+            "subject": "Application for {{RoleType}} ({{Division}}) at {{Company}} — {{SenderName}}",
+            "body": """Good Morning, I hope you are doing well<br><br>I realise that your schedule is very valuable, so I'll Keep it short.<br>I'm a 2nd year student at Ramjas College, University of Delhi, passionate about {{Division}}. I am writing to express my strong interest in exploring {{RoleType}} opportunities within the {{Division}} team at {{Company}}.<br><br>Something that might make me a tad bit more relevant-<br><br>- 1. Corporate internships (Foxhog, StartupLanes, Plutus Business Advisory) in research, advisory, and operations.<br>- 2. Handled Live Projects at firms like Findoc, Rapido, CRY, Bombay Shaving Company, ZYBER, and Saveit.<br>- 3. PORs in several top societies (Placement Cell, E-Cell) driving corporate engagement.<br><br>I have attached my CV for your review. I would be grateful if my profile could be considered for any suitable openings or route it to the appropriate hiring managers.<br><br>Thank you for your time and consideration.<br><br>Best,<br>{{SenderName}}<br>{{SenderPhone}}""",
+            "day_offset": 0
+        },
+        "initial_non_hr": {
+            "subject": "Exploring opportunities at {{Company}} — {{SenderName}}",
             "body": """Good Morning, I hope you are doing well<br><br>I realise that your schedule is very valuable, so I'll Keep it short.<br>I'm a 2nd year student at Ramjas College, University of Delhi, passionate about career exploration across finance, consulting, and management. I'm seeking a {{RoleType}} at {{Company}} in the {{Division}} to gain real-time corporate experience.<br><br>Something that might make me a tad bit more relevant-<br><br>- 1. Corporate internships (Foxhog, StartupLanes, Plutus Business Advisory) in research, advisory, and operations.<br><br>- 2. Handled Live Projects at firms like Findoc, Rapido, CRY, Bombay Shaving Company, ZYBER, and Saveit across several business verticals.<br><br>- 3. Held PORs in several top societies (Placement Cell, E-Cell) driving corporate engagement and project management.<br><br>I am attaching my CV for your reference. I would be grateful if my profile could be considered for any suitable opportunities or related teams.<br><br>I understand this may not directly fall within your area of responsibility, but I would sincerely appreciate any guidance or consideration that could help me explore relevant opportunities within the organization.<br><br>I am eager to learn, willing to put in the required effort, and excited about the possibility of contributing while gaining exposure from industry leaders at {{Company}}.<br><br>Looking forward to being an asset to the team, thanks for your time and the read<br>Best,<br><br>{{SenderName}}<br>{{SenderPhone}}""",
             "day_offset": 0
         },
@@ -264,6 +289,11 @@ def init_db():
         cursor.execute("ALTER TABLE settings ADD COLUMN public_url TEXT DEFAULT 'http://127.0.0.1:8001'")
     except sqlite3.OperationalError:
         pass
+    try:
+        cursor.execute("ALTER TABLE schedule ADD COLUMN target_type TEXT DEFAULT 'HR'")
+    except sqlite3.OperationalError:
+        pass
+    cursor.execute("UPDATE templates SET step_key = 'initial_hr' WHERE step_key = 'initial'")
     conn.commit()
 
     # Ensure default local user (id=1) and settings exist for seamless desktop app usage

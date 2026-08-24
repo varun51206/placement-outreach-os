@@ -423,11 +423,11 @@ async function deleteAttachment(campaignId) {
 // --- Lead Manager Spreadsheet Grid ---
 
 const CAMPAIGN_HEADERS = {
-    finance: ["Recipient Email *", "First Name", "Company Name *", "Role Type (Job / Internship) *", "Target Division *", "Custom Experience Detail"],
-    consulting: ["Recipient Email *", "First Name", "Company Name *", "Role Type (Job / Internship) *", "Target Division *", "Target Client Focus"],
-    marketing: ["Recipient Email *", "First Name", "Company Name *", "Role Type (Job / Internship) *", "Target Division *", "Campaign/Product Highlight"],
-    tech: ["Recipient Email *", "First Name", "Company Name *", "Role Type (Job / Internship) *", "Target Division *", "Preferred Tech Stack Highlight"],
-    all_purpose: ["Recipient Email *", "First Name", "Company Name *", "Role Type (Job / Internship) *", "Target Division *", "Custom Note Placeholder"]
+    finance: ["Recipient Email *", "First Name", "Company Name *", "Role Type (Job / Internship) *", "Target Division *", "Target Type (HR / Non-HR) *", "Custom Experience Detail"],
+    consulting: ["Recipient Email *", "First Name", "Company Name *", "Role Type (Job / Internship) *", "Target Division *", "Target Type (HR / Non-HR) *", "Target Client Focus"],
+    marketing: ["Recipient Email *", "First Name", "Company Name *", "Role Type (Job / Internship) *", "Target Division *", "Target Type (HR / Non-HR) *", "Campaign/Product Highlight"],
+    tech: ["Recipient Email *", "First Name", "Company Name *", "Role Type (Job / Internship) *", "Target Division *", "Target Type (HR / Non-HR) *", "Preferred Tech Stack Highlight"],
+    all_purpose: ["Recipient Email *", "First Name", "Company Name *", "Role Type (Job / Internship) *", "Target Division *", "Target Type (HR / Non-HR) *", "Custom Note Placeholder"]
 };
 
 function loadLeadsGrid() {
@@ -476,6 +476,7 @@ function addGridRow() {
         role: "Internship",
         custom_field_1: "",
         custom_field_2: "",
+        target_type: "HR",
         start_from: "initial"
     };
     gridData.push(rowObj);
@@ -496,6 +497,8 @@ function addGridRow() {
     tr.appendChild(createDropdownCell(index, "role", ["Internship", "Job"]));
     // Target Division
     tr.appendChild(createEditableCell(index, "custom_field_1", "e.g. Valuations Division"));
+    // Target Type (HR / Non-HR)
+    tr.appendChild(createDropdownCell(index, "target_type", ["HR", "Non-HR"]));
     // Custom experience/note field
     tr.appendChild(createEditableCell(index, "custom_field_2", "e.g. highlights"));
     
@@ -566,14 +569,15 @@ async function bulkSaveLeads() {
         const inputs = row.querySelectorAll("div[contenteditable='true']");
         const selects = row.querySelectorAll("select");
         
-        if (inputs.length >= 4 && selects.length >= 2) {
+        if (inputs.length >= 4 && selects.length >= 3) {
             const email = inputs[0].innerText.trim();
             const first_name = inputs[1].innerText.trim();
             const company = inputs[2].innerText.trim();
             const role = selects[0].value;
             const custom_field_1 = inputs[3].innerText.trim();
+            const target_type = selects[1].value;
             const custom_field_2 = inputs[4].innerText.trim();
-            const start_from = selects[1].value;
+            const start_from = selects[2].value;
             
             if (email) {
                 leadsToSend.push({
@@ -583,6 +587,7 @@ async function bulkSaveLeads() {
                     role,
                     custom_field_1,
                     custom_field_2,
+                    target_type,
                     start_from
                 });
             }
@@ -923,7 +928,8 @@ async function loadTemplatesTab() {
     const stepSelect = document.getElementById("template-step-select");
     
     stepSelect.innerHTML = `
-        <option value="initial">Initial Outreach Mail</option>
+        <option value="initial_hr">Initial Step (HR Recruiter)</option>
+        <option value="initial_non_hr">Initial Step (Non-HR Manager)</option>
         <option value="f1">Follow Up 1 (F1)</option>
         <option value="f2">Follow Up 2 (F2)</option>
         <option value="f3">Follow Up 3 (F3)</option>
