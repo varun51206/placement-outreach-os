@@ -1,20 +1,4 @@
 const API_BASE = window.location.origin;
-let sessionToken = localStorage.getItem("session_token") || "";
-let currentUsername = localStorage.getItem("username") || "";
-
-// Intercept fetch to handle 401 session expiration automatically
-const originalFetch = window.fetch;
-window.fetch = async function(...args) {
-    const res = await originalFetch.apply(this, args);
-    if (res.status === 401 && !args[0].includes("/api/login") && !args[0].includes("/api/register")) {
-        localStorage.removeItem("session_token");
-        localStorage.removeItem("username");
-        sessionToken = "";
-        currentUsername = "";
-        showAuth();
-    }
-    return res;
-};
 
 // Active Tab state
 let currentTab = "dashboard";
@@ -48,25 +32,11 @@ function updateTime() {
 
 // --- Navigation & UI Switchers ---
 
-function switchAuthTab(type) {
-    document.getElementById("tab-btn-login").classList.toggle("active", type === 'login');
-    document.getElementById("tab-btn-register").classList.toggle("active", type === 'register');
-    document.getElementById("auth-submit-btn").textContent = type === 'login' ? 'Sign In' : 'Register';
-    
-    // Clear alerts
-    document.getElementById("auth-error").classList.add("hidden");
-    document.getElementById("auth-success").classList.add("hidden");
-}
-
-function showAuth() {
-    document.getElementById("auth-container").classList.remove("hidden");
-    document.getElementById("app-container").classList.add("hidden");
-}
-
 function showApp() {
-    document.getElementById("auth-container").classList.add("hidden");
+    const authContainer = document.getElementById("auth-container");
+    if (authContainer) authContainer.classList.add("hidden");
     document.getElementById("app-container").classList.remove("hidden");
-    document.getElementById("display-username").textContent = currentUsername || "Varun Bhardwaj";
+    document.getElementById("display-username").textContent = "Varun Bhardwaj";
     
     // Load default tab
     switchTab("dashboard");
@@ -105,7 +75,7 @@ function switchTab(tabId) {
     if (tabId === "dashboard") {
         loadDashboardStats();
     } else if (tabId === "tracker") {
-        loadKanbanCards();
+        loadTrackerBoard();
     } else if (tabId === "leads") {
         loadLeadsGrid();
         refreshScheduleQueue();
@@ -114,74 +84,6 @@ function switchTab(tabId) {
     } else if (tabId === "settings") {
         loadSettingsTab();
     }
-}
-
-
-// --- Auth & Session Logic ---
-
-async function handleAuth(e) {
-    e.preventDefault();
-    const user = document.getElementById("auth-username").value.trim();
-    const pass = document.getElementById("auth-password").value.trim();
-    const submitBtn = document.getElementById("auth-submit-btn");
-    const isLogin = submitBtn.textContent === "Sign In";
-    
-    const errEl = document.getElementById("auth-error");
-    const succEl = document.getElementById("auth-success");
-    errEl.classList.add("hidden");
-    succEl.classList.add("hidden");
-    
-    const url = isLogin ? "/api/login" : "/api/register";
-    
-    try {
-        const response = await fetch(API_BASE + url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username: user, password: pass })
-        });
-        
-        let data;
-        try {
-            data = await response.json();
-        } catch (jsonErr) {
-            throw new Error(`Server Error (${response.status}): ${response.statusText || "Request failed"}`);
-        }
-        
-        if (!response.ok) {
-            throw new Error(data.detail || "Authentication request failed.");
-        }
-        
-        if (isLogin) {
-            sessionToken = data.token;
-            currentUsername = data.username;
-            localStorage.setItem("session_token", sessionToken);
-            localStorage.setItem("username", currentUsername);
-            showApp();
-        } else {
-            succEl.textContent = "Registration successful! You can sign in now.";
-            succEl.classList.remove("hidden");
-            switchAuthTab("login");
-        }
-        
-    } catch (err) {
-        errEl.textContent = err.message;
-        errEl.classList.remove("hidden");
-    }
-}
-
-async function handleLogout() {
-    try {
-        await fetch(API_BASE + "/api/logout", {
-            method: "POST",
-            headers: { "Authorization": `Bearer ${sessionToken}` }
-        });
-    } catch (e) {}
-    
-    sessionToken = "";
-    currentUsername = "";
-    localStorage.removeItem("session_token");
-    localStorage.removeItem("username");
-    showAuth();
 }
 
 function getAuthHeaders() {

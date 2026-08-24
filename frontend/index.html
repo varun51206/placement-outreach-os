@@ -14,33 +14,6 @@
     <div class="bg-glow bg-glow-1"></div>
     <div class="bg-glow bg-glow-2"></div>
 
-    <!-- Auth Container (Disabled for zero-auth desktop mode) -->
-    <div id="auth-container" class="auth-wrapper hidden">
-        <div class="auth-card">
-            <div class="auth-header">
-                <div class="brand-logo">🎓</div>
-                <h1>Placement OS</h1>
-                <p>Outreach & Application Tracker</p>
-            </div>
-            <div class="auth-tabs">
-                <button id="tab-btn-login" class="auth-tab-btn active" onclick="switchAuthTab('login')">Sign In</button>
-                <button id="tab-btn-register" class="auth-tab-btn" onclick="switchAuthTab('register')">Register</button>
-            </div>
-            <form id="auth-form" onsubmit="handleAuth(event)">
-                <div class="input-group">
-                    <label for="auth-username">Username</label>
-                    <input type="text" id="auth-username" required placeholder="e.g. varun_bhardwaj">
-                </div>
-                <div class="input-group">
-                    <label for="auth-password">Password</label>
-                    <input type="password" id="auth-password" required placeholder="••••••••">
-                </div>
-                <button type="submit" id="auth-submit-btn" class="btn btn-primary btn-block">Sign In</button>
-                <div id="auth-error" class="alert alert-danger hidden"></div>
-                <div id="auth-success" class="alert alert-success hidden"></div>
-            </form>
-        </div>
-    </div>
 
     <!-- App Container (Primary Interface) -->
     <div id="app-container" class="app-layout">
@@ -85,7 +58,6 @@
                         <span id="display-username" class="username">Guest</span>
                         <span class="role">Job Seeker</span>
                     </div>
-                    <button class="logout-btn" onclick="handleLogout()" title="Logout">🚪</button>
                 </div>
             </div>
         </aside>
