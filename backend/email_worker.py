@@ -65,7 +65,8 @@ def sanitize_template_text(text: str) -> str:
 def render_template(text: str, data: dict) -> str:
     out = sanitize_template_text(text)
     for k, v in data.items():
-        out = out.replace(f"{{{{{k}}}}}", str(v if v is not None else ""))
+        pattern = re.compile(rf"{{{{\s*{k}\s*}}}}", re.IGNORECASE)
+        out = pattern.sub(str(v if v is not None else ""), out)
     return out
 
 def get_campaign_attachment(conn, user_id, campaign_id):
@@ -87,9 +88,10 @@ def send_email_smtp(gmail_user, gmail_app_password, to_email, subject, body, fro
         msg["To"] = to_email.strip()
         msg["Subject"] = subject
         
-        is_html = body.strip().startswith("<") or "</div>" in body or "</p>" in body or "<br" in body
+        is_html_structured = "</div>" in body or "</p>" in body or "<br" in body
+        is_html = is_html_structured or body.strip().startswith("<")
         mime_type = "html" if is_html else "plain"
-        if mime_type == "html":
+        if mime_type == "html" and not is_html_structured:
             body = body.replace("\n", "<br>")
         msg.attach(MIMEText(body, mime_type, "utf-8"))
 
@@ -239,16 +241,26 @@ def process_due_emails(user_id: int):
 
             role_type_str = "Summer Internship" if "intern" in str(role).lower() else "Full-Time Role"
 
-            # Render variables
+            # Render variables with aliases for case-insensitivity and alternative naming conventions
             data_bindings = {
                 "FirstName": first_name or "",
+                "name": first_name or "",
+                "first_name": first_name or "",
                 "Company": company or "",
+                "company": company or "",
                 "RoleType": role_type_str,
+                "role_type": role_type_str,
+                "role": role_type_str,
                 "Division": c1 or "",
+                "division": c1 or "",
                 "Custom1": c1 or "",
+                "custom1": c1 or "",
                 "Custom2": c2 or "",
+                "custom2": c2 or "",
                 "SenderName": sender_name or "Varun Bhardwaj",
+                "sender_name": sender_name or "Varun Bhardwaj",
                 "SenderPhone": sender_phone or "",
+                "sender_phone": sender_phone or "",
             }
             
             subject = render_template(subject_template, data_bindings)

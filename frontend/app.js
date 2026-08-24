@@ -100,7 +100,7 @@ async function loadSettingsTab() {
     
     try {
         const response = await fetch(API_BASE + "/api/settings", {
-            headers: { "Authorization": `Bearer ${sessionToken}` }
+            headers: getAuthHeaders()
         });
         const data = await response.json();
         
@@ -197,7 +197,7 @@ async function toggleEmergencyStop() {
     try {
         const res = await fetch(API_BASE + "/api/settings/toggle-stop", {
             method: "POST",
-            headers: { "Authorization": `Bearer ${sessionToken}` }
+            headers: getAuthHeaders()
         });
         const data = await res.json();
         if (res.ok) {
@@ -230,7 +230,7 @@ async function loadAttachmentsList() {
     
     try {
         const res = await fetch(API_BASE + "/api/attachments", {
-            headers: { "Authorization": `Bearer ${sessionToken}` }
+            headers: getAuthHeaders()
         });
         const files = await res.json();
         
@@ -284,7 +284,7 @@ async function handleFileSelected(e) {
     try {
         const res = await fetch(API_BASE + "/api/attachments/upload", {
             method: "POST",
-            headers: { "Authorization": `Bearer ${sessionToken}` },
+            headers: getAuthHeaders(),
             body: formData
         });
         const data = await res.json();
@@ -311,7 +311,7 @@ async function deleteAttachment(campaignId) {
     try {
         const res = await fetch(`${API_BASE}/api/attachments/${campaignId}`, {
             method: "DELETE",
-            headers: { "Authorization": `Bearer ${sessionToken}` }
+            headers: getAuthHeaders()
         });
         if (res.ok) {
             loadAttachmentsList();
@@ -565,7 +565,7 @@ async function refreshScheduleQueue() {
     
     try {
         const res = await fetch(`${API_BASE}/api/schedule?campaign_id=${currentGridCampaign}`, {
-            headers: { "Authorization": `Bearer ${sessionToken}` }
+            headers: getAuthHeaders()
         });
         const data = await res.json();
         
@@ -678,7 +678,7 @@ async function clearRemoteSchedule() {
     try {
         const res = await fetch(`${API_BASE}/api/schedule/clear?campaign_id=${currentGridCampaign}`, {
             method: "POST",
-            headers: { "Authorization": `Bearer ${sessionToken}` }
+            headers: getAuthHeaders()
         });
         if (res.ok) {
             refreshScheduleQueue();
@@ -699,7 +699,7 @@ async function syncGmailReplies() {
     try {
         const res = await fetch(API_BASE + "/api/schedule/sync-replies", {
             method: "POST",
-            headers: { "Authorization": `Bearer ${sessionToken}` }
+            headers: getAuthHeaders()
         });
         const data = await res.json();
         if (res.ok) {
@@ -735,7 +735,7 @@ async function triggerManualSend() {
     try {
         const res = await fetch(API_BASE + "/api/schedule/send", {
             method: "POST",
-            headers: { "Authorization": `Bearer ${sessionToken}` }
+            headers: getAuthHeaders()
         });
         const data = await res.json();
         
@@ -768,14 +768,11 @@ function startStatusPolling() {
     if (statusPollInterval) clearInterval(statusPollInterval);
     
     statusPollInterval = setInterval(async () => {
-        if (!sessionToken) {
-            clearInterval(statusPollInterval);
-            return;
-        }
+
         
         try {
             const res = await fetch(API_BASE + "/api/schedule/send-status", {
-                headers: { "Authorization": `Bearer ${sessionToken}` }
+                headers: getAuthHeaders()
             });
             const status = await res.json();
             
@@ -840,7 +837,7 @@ async function loadTemplatesTab() {
     
     try {
         const res = await fetch(API_BASE + "/api/templates", {
-            headers: { "Authorization": `Bearer ${sessionToken}` }
+            headers: getAuthHeaders()
         });
         const data = await res.json();
         
@@ -894,28 +891,45 @@ function loadTemplateView() {
 }
 
 function renderTemplatePreview() {
-    const subTpl = document.getElementById("template-subject").value;
+    const subTpl = document.getElementById("template-subject")?.value || "";
     const editor = document.getElementById("template-body-editor");
     const bodyTpl = editor ? editor.innerHTML : "";
     
     const subText = document.getElementById("preview-subject-text");
     const bodyText = document.getElementById("preview-body-text");
     
+    if (!subText || !bodyText) return;
+    
     const mockData = {
         FirstName: "Aman",
+        name: "Aman",
+        first_name: "Aman",
+        
         Company: "EY India",
+        company: "EY India",
+        
         RoleType: "Summer Internship",
+        role_type: "Summer Internship",
+        role: "Summer Internship",
+        
         Division: "Valuations/Investments Division",
+        division: "Valuations/Investments Division",
+        
         SenderName: document.getElementById("settings-sender-name")?.value || "Varun Bhardwaj",
-        SenderPhone: document.getElementById("settings-sender-phone")?.value || "+91 95991 25723"
+        sender_name: document.getElementById("settings-sender-name")?.value || "Varun Bhardwaj",
+        
+        SenderPhone: document.getElementById("settings-sender-phone")?.value || "+91 95991 25723",
+        sender_phone: document.getElementById("settings-sender-phone")?.value || "+91 95991 25723"
     };
     
     let renderedSub = subTpl;
     let renderedBody = bodyTpl;
     
     for (const [k, v] of Object.entries(mockData)) {
-        renderedSub = renderedSub.replaceAll(`{{${k}}}`, v);
-        renderedBody = renderedBody.replaceAll(`{{${k}}}`, v);
+        // Match case-insensitively with optional spacing inside double braces
+        const rg = new RegExp(`{{\\s*${k}\\s*}}`, 'gi');
+        renderedSub = renderedSub.replace(rg, v);
+        renderedBody = renderedBody.replace(rg, v);
     }
     
     subText.textContent = renderedSub;
@@ -1004,7 +1018,7 @@ async function sendTestEmail() {
 async function loadDashboardStats() {
     try {
         const res = await fetch(API_BASE + "/api/schedule/stats", {
-            headers: { "Authorization": `Bearer ${sessionToken}` }
+            headers: getAuthHeaders()
         });
         const data = await res.json();
         
@@ -1065,7 +1079,7 @@ let allTrackerApplications = [];
 async function loadKanbanCards() {
     try {
         const res = await fetch(API_BASE + "/api/applications", {
-            headers: { "Authorization": `Bearer ${sessionToken}` }
+            headers: getAuthHeaders()
         });
         allTrackerApplications = await res.json();
         
@@ -1257,7 +1271,7 @@ async function deleteApplicationClick() {
     try {
         const res = await fetch(`${API_BASE}/api/applications/${appId}`, {
             method: "DELETE",
-            headers: { "Authorization": `Bearer ${sessionToken}` }
+            headers: getAuthHeaders()
         });
         if (res.ok) {
             closeModal();
