@@ -93,6 +93,8 @@ def send_email_smtp(gmail_user, gmail_app_password, to_email, subject, body, fro
         mime_type = "html" if is_html else "plain"
         if mime_type == "html" and not is_html_structured:
             body = body.replace("\n", "<br>")
+        if mime_type == "html":
+            body = re.sub(r'\s*style="[^"]*"', '', body, flags=re.IGNORECASE)
         msg.attach(MIMEText(body, mime_type, "utf-8"))
 
         if attachment_path and os.path.exists(attachment_path):

@@ -18,6 +18,16 @@ window.addEventListener("load", () => {
     updateTime();
     setInterval(updateTime, 60000);
     showApp();
+    
+    // Clean paste event in rich text editor to strip custom formatting
+    const editor = document.getElementById("template-body-editor");
+    if (editor) {
+        editor.addEventListener("paste", (e) => {
+            e.preventDefault();
+            const text = e.clipboardData.getData("text/plain");
+            document.execCommand("insertText", false, text);
+        });
+    }
 });
 
 // Auto time update in header
