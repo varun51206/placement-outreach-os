@@ -294,7 +294,6 @@ async function handleFileSelected(e) {
     try {
         const res = await fetch(API_BASE + "/api/attachments/upload", {
             method: "POST",
-            headers: getAuthHeaders(),
             body: formData
         });
         const data = await res.json();
@@ -303,7 +302,11 @@ async function handleFileSelected(e) {
             statusEl.className = "alert alert-success";
             loadAttachmentsList();
         } else {
-            statusEl.textContent = "Upload failed: " + data.detail;
+            let errMsg = data.detail;
+            if (typeof errMsg === "object") {
+                errMsg = JSON.stringify(errMsg);
+            }
+            statusEl.textContent = "Upload failed: " + errMsg;
             statusEl.className = "alert alert-danger";
         }
     } catch (err) {
